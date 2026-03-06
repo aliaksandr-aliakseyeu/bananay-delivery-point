@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e3a8a;
+  --color-primary-hover: #1e40af;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f97316;
+  --color-secondary-hover: #ea580c;
+  --color-secondary-foreground: #ffffff;
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-muted: #6b7280;
+  --color-muted-foreground: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-success: #10b981;
+  --color-accent: #f3f4f6;
+  --color-accent-foreground: #1a1a1a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-ring: #1e3a8a;
+  --color-input: #f3f4f6;
+  --radius: 0.5rem;
+}
+
+:root {
+  --primary: #1e3a8a;
+  --primary-hover: #1e40af;
+  --secondary: #f97316;
+  --secondary-hover: #ea580c;
+  --muted: #6b7280;
+  --success: #10b981;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
