@@ -11,6 +11,28 @@
     "signInButton": "Sign in",
     "registerButton": "Become a courier"
   },
+  "HowItWorks": {
+    "title": "How it works",
+    "step1Title": "Get the goods",
+    "step1Desc": "Pick up the cargo from the distribution center.",
+    "step2Title": "Deliver to the store",
+    "step2Desc": "Deliver goods to the nearest retail outlets.",
+    "step3Title": "Complete the delivery",
+    "step3Desc": "Confirm the transfer of goods."
+  },
+  "WhyBecomeCourier": {
+    "title": "Why become a courier",
+    "benefit1": "Short routes",
+    "benefit2": "Delivery from nearby DCs",
+    "benefit3": "Regular orders",
+    "benefit4": "Goods for stores and cafes",
+    "benefit5": "Fast payments",
+    "benefit6": "Payment for each delivery"
+  },
+  "HomeCta": {
+    "title": "Ready to start delivering?",
+    "button": "Become a courier"
+  },
   "Auth": {
     "courier": {
       "title": "Sign in with phone",
@@ -38,7 +60,7 @@
   },
   "Footer": {
     "tagline": "Last-mile delivery for couriers. Bananay — connecting distribution centers and recipients.",
-    "copyright": "© Bananay. All rights reserved."
+    "copyright": "© Bananay Courier. All rights reserved."
   },
   "LoginPage": {
     "title": "Bananay — for couriers",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { SITE_TITLE } from "@/lib/site-config";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -8,8 +9,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Bananay Courier — Платформа для курьеров",
+  title: `${SITE_TITLE} — Платформа для курьеров`,
   description: "Доставка для курьеров. Bananay — соединяем распределительные центры и получателей.",
+  icons: {
+    icon: "/bananay-icon-transparent.png",
+  },
 };
 
 export default function RootLayout({

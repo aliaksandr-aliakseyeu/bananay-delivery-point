@@ -6,6 +6,8 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { LanguageSwitcher } from './language-switcher';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { APP_NAME } from '@/lib/site-config';
 import { useAuthStore } from '@/lib/stores/auth-store';
 import { LogOut, Menu, X } from 'lucide-react';
 
@@ -23,9 +25,17 @@ export function Header() {
   return (
     <header className="sticky top-0 z-[9999] w-full border-b bg-background/95 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-        <Link href={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-[#1e3a8a]">Bananay</span>
-          <span className="hidden sm:inline-block text-xs font-medium text-gray-500 border border-blue-200 rounded px-1.5 py-0.5 bg-blue-50">Courier</span>
+        <Link href={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-1 shrink-0">
+          <Image
+            src="/bananay-logo-transparent.png"
+            alt="Bananay"
+            width={240}
+            height={72}
+            className="h-8 w-auto object-contain object-center"
+            priority
+            unoptimized
+          />
+          <span className="text-base italic font-medium text-[#3a9cf5] opacity-90 mt-[3px]">{APP_NAME}</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-3">
