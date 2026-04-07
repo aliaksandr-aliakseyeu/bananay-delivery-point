@@ -9,7 +9,7 @@ export interface CourierVerifyResponse {
 
 export const courierAuthApi = {
   requestOtp: async (phone_e164: string): Promise<{ message?: string }> => {
-    const res = await fetch(`${API_BASE_URL}/api/v1/auth/courier/request-otp`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/auth/delivery-point/request-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_e164 }),
@@ -25,7 +25,7 @@ export const courierAuthApi = {
     phone_e164: string,
     code: string
   ): Promise<CourierVerifyResponse> => {
-    const res = await fetch(`${API_BASE_URL}/api/v1/auth/courier/verify-otp`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/auth/delivery-point/verify-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone_e164, code }),
@@ -38,7 +38,7 @@ export const courierAuthApi = {
   },
 
   refreshToken: async (refresh_token: string): Promise<CourierVerifyResponse> => {
-    const res = await fetch(`${API_BASE_URL}/api/v1/auth/courier/refresh`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/auth/delivery-point/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token }),

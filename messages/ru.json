@@ -6,32 +6,32 @@
     "becomeCourier": "Стать курьером"
   },
   "Hero": {
-    "title": "Курьерская доставка последней мили",
-    "subtitle": "Присоединяйтесь к Bananay Courier. Доставляйте заказы от распределительных центров получателям — гибко и удобно.",
+    "title": "Отслеживание доставок на ваши точки",
+    "subtitle": "Bananay Delivery Point помогает владельцам точек видеть входящие и завершенные доставки по выбранным адресам.",
     "signInButton": "Войти",
-    "registerButton": "Стать курьером"
+    "registerButton": "Подключить точки"
   },
   "HowItWorks": {
     "title": "Как это работает",
-    "step1Title": "Получите товар",
-    "step1Desc": "Заберите груз из распределительного центра.",
-    "step2Title": "Доставьте в магазин",
-    "step2Desc": "Отвезите товары в ближайшие торговые точки.",
-    "step3Title": "Завершите доставку",
-    "step3Desc": "Подтвердите передачу товара."
+    "step1Title": "Добавьте свои точки",
+    "step1Desc": "Соберите список точек на карте или через поиск по адресу.",
+    "step2Title": "Отправьте на модерацию",
+    "step2Desc": "Администратор проверит заявку и подтвердит доступ к точкам.",
+    "step3Title": "Отслеживайте доставки",
+    "step3Desc": "После одобрения вы видите текущие доставки и историю по точкам."
   },
   "WhyBecomeCourier": {
-    "title": "Почему стоит стать курьером",
-    "benefit1": "Короткие маршруты",
-    "benefit2": "Доставка из ближайших РЦ",
-    "benefit3": "Регулярные заказы",
-    "benefit4": "Товары для магазинов и кафе",
-    "benefit5": "Быстрые выплаты",
-    "benefit6": "Оплата за каждую доставку"
+    "title": "Почему это удобно для точки доставки",
+    "benefit1": "Один кабинет для всех ваших точек",
+    "benefit2": "Прозрачный статус по каждой доставке",
+    "benefit3": "История доставок в одном месте",
+    "benefit4": "Добавление новых точек через карту",
+    "benefit5": "Изменения точек через модерацию",
+    "benefit6": "Быстрый доступ с телефона по OTP"
   },
   "HomeCta": {
-    "title": "Готовы начать доставлять?",
-    "button": "Стать курьером"
+    "title": "Готовы подключить свои точки?",
+    "button": "Начать подключение"
   },
   "Auth": {
     "courier": {
@@ -59,8 +59,8 @@
     }
   },
   "Footer": {
-    "tagline": "Курьерская доставка. Bananay — связь распределительных центров и получателей.",
-    "copyright": "© Bananay Courier. Все права защищены."
+    "tagline": "Bananay Delivery Point — контроль доставок на ваши точки в одном кабинете.",
+    "copyright": "© Bananay Delivery Point. Все права защищены."
   },
   "LoginPage": {
     "title": "Bananay — для курьеров",
@@ -247,6 +247,96 @@
         "description": "Откройте кузов и сфотографируйте грузовое отделение."
       }
     }
+  },
+  "TrackingOnboarding": {
+    "mapTitle": "Карта точек доставки",
+    "mapLegend": "Зелёные метки — точки в вашем списке\nОранжевые — можно добавить\nНажмите на метку, чтобы добавить или убрать",
+    "legendTitle": "Легенда:",
+    "legendInList": "В списке ({count})",
+    "legendAvailable": "Доступно для добавления",
+    "filtersTitle": "Фильтры",
+    "filtersLayers": "Слои",
+    "filterInList": "Точки в списке",
+    "filterAvailable": "Доступные точки",
+    "popupProcessing": "…",
+    "popupAddToList": "В список",
+    "popupRemoveFromList": "Убрать из списка",
+    "addressSectionTitle": "Добавить точки по адресу",
+    "addressSectionDescription": "Введите адрес, чтобы найти точки доставки в радиусе 300 метров.",
+    "addressPlaceholder": "Введите адрес…",
+    "addressMinChars": "Минимум 3 символа",
+    "addressNoResults": "Адреса не найдены",
+    "addressSearchingPoints": "Ищем точки рядом…",
+    "addressFoundPoints": "Найдено точек: {count}",
+    "addressDistanceMeters": "Расстояние: {meters} м",
+    "addressAddButton": "Добавить",
+    "addressAlreadyInList": "Уже в списке",
+    "addressNoPointsFound": "В радиусе 300 м нет точек доставки.",
+    "addressErrorSearching": "Не удалось загрузить точки рядом.",
+    "addressErrorAdding": "Не удалось добавить точку.",
+    "sidebarTitle": "Точки в списке",
+    "sidebarEmptyTitle": "Список пуст",
+    "sidebarEmptyHint": "Добавьте точки с карты или по адресу под картой.",
+    "sidebarRemoveAria": "Убрать из списка",
+    "sidebarFallbackName": "Точка"
+  },
+  "DeliveryPointDashboard": {
+    "title": "Кабинет точки доставки",
+    "subtitle": "Заполните данные и отправьте заявку на модерацию.",
+    "error": "Ошибка",
+    "errorLoading": "Не удалось загрузить данные профиля.",
+    "incomingTitle": "Входящие доставки",
+    "incomingDescription": "Список активных доставок на ваши точки ({count}).",
+    "historyTitle": "История доставок",
+    "historyDescription": "Просмотр завершенных и неуспешных доставок.",
+    "statistics": "Статистика",
+    "status": "Статус",
+    "statusDraft": "Черновик",
+    "statusPending": "На модерации",
+    "statusActive": "Активен",
+    "statusRejected": "Отклонен",
+    "statusBlocked": "Заблокирован",
+    "linkedPoints": "Привязанные точки",
+    "activeDeliveries": "Активные доставки",
+    "activeListTitle": "Управление точками доставки",
+    "activeListDescription": "Добавляйте и убирайте точки из вашего списка отслеживания.",
+    "activeListModerationTitle": "Новые точки требуют модерации",
+    "activeListModerationDescription": "Доставки по новым точкам будут видны только после одобрения администратором.",
+    "activeListSubmit": "Отправить обновление списка на модерацию",
+    "activeListSaved": "Обновление списка отправлено на модерацию.",
+    "activeListSaveError": "Не удалось отправить обновление списка.",
+    "activeListRequirePoints": "Добавьте хотя бы одну точку.",
+    "managePointsTitle": "Управление точками доставки",
+    "managePointsDescription": "Добавляйте новые точки в список (новые точки требуют модерации).",
+    "backToDashboard": "На главную",
+    "pendingTitle": "Заявка на рассмотрении",
+    "pendingDescription": "Ваши данные отправлены. Ожидайте одобрения администратора.",
+    "formTitle": "Расскажите о себе и выберите точки",
+    "rejectedTitle": "Заявка отклонена",
+    "rejectedDescription": "Исправьте данные и отправьте заявку повторно.",
+    "firstNamePlaceholder": "Имя",
+    "lastNamePlaceholder": "Фамилия",
+    "phonePlaceholder": "Телефон",
+    "emailPlaceholder": "Email",
+    "trackingListNamePlaceholder": "Название списка отслеживания",
+    "trackingListDescriptionPlaceholder": "Описание списка отслеживания (необязательно)",
+    "defaultTrackingListName": "Мой список отслеживания",
+    "aboutPlaceholder": "Информация о вас и точках, которые хотите отслеживать",
+    "pointsSectionTitle": "Соберите список точек для отслеживания",
+    "addressSearchPlaceholder": "Введите адрес для поиска ближайших точек",
+    "searchButton": "Найти",
+    "searchingPoints": "Ищем точки рядом с адресом...",
+    "addPointButton": "Добавить",
+    "removePointButton": "Убрать",
+    "addressSearchError": "Не удалось выполнить поиск адреса.",
+    "pointsSearchError": "Не удалось загрузить ближайшие точки.",
+    "pointIdsPlaceholder": "ID точек для отслеживания (например: 101, 205, 300)",
+    "pointIdsPreview": "Выбрано точек: {count}",
+    "submit": "Отправить на согласование",
+    "submitting": "Отправка...",
+    "submitError": "Не удалось отправить заявку.",
+    "blockedTitle": "Аккаунт заблокирован",
+    "blockedDescription": "Свяжитесь с администратором Bananay."
   },
   "DeliveryTasks": {
     "title": "Задачи доставки",

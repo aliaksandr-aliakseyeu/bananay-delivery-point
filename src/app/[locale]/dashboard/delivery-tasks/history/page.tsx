@@ -1,50 +1,62 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { RequireCourierAuth } from '@/components/auth/require-courier-auth';
+import { RequirePointAuth } from '@/components/auth/require-point-auth';
 import { BackButton } from '@/components/ui/back-button';
 import { PageLoading } from '@/components/ui/page-loading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { deliveryTasksApi, type CompletedTask } from '@/lib/api/delivery-tasks';
+import { useRouter } from '@/i18n/routing';
+import { deliveryPointApi } from '@/lib/api/delivery-point';
 import { Package, MapPin, CheckCircle, Calendar, Box } from 'lucide-react';
 
 export default function DeliveryTasksHistoryPage() {
-  const t = useTranslations('DeliveryTasks');
+  const router = useRouter();
   const [tasks, setTasks] = useState<CompletedTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    deliveryTasksApi
-      .getCompletedTasks()
-      .then(setTasks)
-      .catch((err: unknown) => setError(err instanceof Error ? err.message : t('errorLoading')))
-      .finally(() => setIsLoading(false));
-  }, [t]);
+    const load = async () => {
+      try {
+        const me = await deliveryPointApi.getMe();
+        if (me.status !== 'active' || me.points.length === 0) {
+          router.replace('/dashboard');
+          return;
+        }
+        const items = await deliveryTasksApi.getCompletedTasks();
+        setTasks(items);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load history');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    void load();
+  }, []);
 
   if (isLoading) {
     return (
-      <RequireCourierAuth>
+      <RequirePointAuth>
         <PageLoading fullPage />
-      </RequireCourierAuth>
+      </RequirePointAuth>
     );
   }
 
   return (
-    <RequireCourierAuth>
+    <RequirePointAuth>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center gap-4 mb-6">
-          <BackButton href="/dashboard/delivery-tasks">{t('back')}</BackButton>
+          <BackButton href="/dashboard/delivery-tasks">Back</BackButton>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t('historyTitle')}</h1>
-            <p className="text-sm text-gray-600 mt-1">{t('historySubtitle')}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Delivery History</h1>
+            <p className="text-sm text-gray-600 mt-1">Completed and failed deliveries</p>
           </div>
         </div>
 
         {error && (
           <Alert variant="destructive" className="mb-6">
-            <AlertTitle>{t('errorLoading')}</AlertTitle>
+            <AlertTitle>Error</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -52,17 +64,17 @@ export default function DeliveryTasksHistoryPage() {
         {tasks.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-10 text-center">
             <Package className="h-14 w-14 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 font-medium">{t('noHistory')}</p>
-            <p className="text-sm text-gray-500 mt-1">{t('noHistoryHint')}</p>
+            <p className="text-gray-600 font-medium">No history yet</p>
+            <p className="text-sm text-gray-500 mt-1">Completed deliveries will appear here.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {tasks.map((task) => {
-              const address = task.delivery_point_address || task.delivery_point_name || t('unknownAddress');
-              const skuLine = task.sku_name ? `${task.sku_name} × ${task.quantity}` : `${t('quantityShort')}: ${task.quantity}`;
+              const address = task.delivery_point_address || task.delivery_point_name || 'Unknown address';
+              const skuLine = task.sku_name ? `${task.sku_name} × ${task.quantity}` : `Qty: ${task.quantity}`;
               return (
                 <div
-                  key={task.task_id}
+                  key={task.item_point_id}
                   className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:border-gray-300 transition-colors"
                 >
                   <div className="p-5">
@@ -76,7 +88,7 @@ export default function DeliveryTasksHistoryPage() {
                       </div>
                       <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-medium shrink-0">
                         <CheckCircle className="h-3.5 w-3.5" />
-                        {t('delivered')}
+                        {task.point_status}
                       </span>
                     </div>
 
@@ -94,7 +106,7 @@ export default function DeliveryTasksHistoryPage() {
 
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <Calendar className="h-3.5 w-3.5" />
-                      {new Date(task.delivered_at).toLocaleString(undefined, {
+                      {new Date(task.delivered_at || task.updated_at).toLocaleString(undefined, {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric',
@@ -110,6 +122,6 @@ export default function DeliveryTasksHistoryPage() {
           </div>
         )}
       </div>
-    </RequireCourierAuth>
+    </RequirePointAuth>
   );
 }

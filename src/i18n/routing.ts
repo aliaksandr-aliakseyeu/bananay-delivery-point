@@ -14,6 +14,7 @@ export const routing = defineRouting({
     '/dashboard/documents': '/dashboard/documents',
     '/dashboard/delivery-tasks': '/dashboard/delivery-tasks',
     '/dashboard/delivery-tasks/history': '/dashboard/delivery-tasks/history',
+    '/dashboard/points-management': '/dashboard/points-management',
     '/onboarding': '/onboarding',
   },
 });

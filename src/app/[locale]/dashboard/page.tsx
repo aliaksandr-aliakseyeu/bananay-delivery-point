@@ -1,89 +1,77 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { RequireCourierAuth } from '@/components/auth/require-courier-auth';
-import { Button } from '@/components/ui/button';
+import { RequirePointAuth } from '@/components/auth/require-point-auth';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { PageLoading } from '@/components/ui/page-loading';
-import { courierApi, type CourierProfileResponse } from '@/lib/api/courier';
-import { dailyCheckInApi, getCheckInStreamUrl, type CheckInStatus } from '@/lib/api/daily-checkin';
 import { deliveryTasksApi } from '@/lib/api/delivery-tasks';
-import { User, Car, Send, CheckCircle, ClipboardCheck, AlertTriangle, RefreshCw, Package, History } from 'lucide-react';
-import { toast } from 'sonner';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  deliveryPointApi,
+  type DeliveryPointInRadiusItem,
+  type DeliveryPointMeResponse,
+  type RegionDeliveryPoint,
+} from '@/lib/api/delivery-point';
+import { DEFAULT_REGION_ID } from '@/lib/constants';
+import { TrackingListMap } from '@/components/tracking-points/tracking-list-map';
+import { TrackingAddressSearchSection } from '@/components/tracking-points/tracking-address-search-section';
+import { TrackingSelectedPointsSidebar } from '@/components/tracking-points/tracking-selected-points-sidebar';
+import { Clock3, History, MapPin, Package, TrendingUp, UserCircle2, XCircle } from 'lucide-react';
 
-const HELPER_SESSION_KEY = 'courier-submit-helper-shown';
+type PointMeta = { name: string; address: string | null };
 
 export default function DashboardPage() {
-  const t = useTranslations('Dashboard');
-  const tOnboarding = useTranslations('Onboarding');
-  const [profile, setProfile] = useState<CourierProfileResponse | null>(null);
-  const [vehiclesCount, setVehiclesCount] = useState(0);
+  const t = useTranslations('DeliveryPointDashboard');
+  const tOnboarding = useTranslations('TrackingOnboarding');
+  const [me, setMe] = useState<DeliveryPointMeResponse | null>(null);
+  const [incomingCount, setIncomingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [trackingListName, setTrackingListName] = useState('');
+  const [trackingListDescription, setTrackingListDescription] = useState('');
+  const [aboutText, setAboutText] = useState('');
+  const [selectedPointIds, setSelectedPointIds] = useState<number[]>([]);
+  const [selectedPointsMeta, setSelectedPointsMeta] = useState<Record<number, PointMeta>>({});
+  const [mapSearchCenter, setMapSearchCenter] = useState<{ lat: number; lon: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [submitConfirmOpen, setSubmitConfirmOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [checkInStatus, setCheckInStatus] = useState<CheckInStatus | null>(null);
-  const [refreshingCheckIn, setRefreshingCheckIn] = useState(false);
-  const [myTasksCount, setMyTasksCount] = useState(0);
 
   useEffect(() => {
     load();
   }, []);
 
-  useEffect(() => {
-    const status = checkInStatus?.checkin?.status;
-    if (status !== 'pending_review') return;
-
-    const url = getCheckInStreamUrl();
-    if (!url) return;
-
-    const es = new EventSource(url);
-    es.addEventListener('daily_checkin_status', (e: MessageEvent) => {
-      try {
-        const data = JSON.parse(e.data || '{}');
-        if (data.status === 'approved' || data.status === 'rejected') {
-          dailyCheckInApi.getTodayStatus().then(setCheckInStatus);
-          if (data.status === 'approved') toast.success(t('dailyCheckIn.approved'));
-          if (data.status === 'rejected') toast.error(t('dailyCheckIn.rejected'));
-        }
-      } catch { }
-    });
-
-    return () => { es.close(); };
-  }, [checkInStatus?.checkin?.status, t]);
-
   const load = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
-      setError(null);
-      const [me, vehicles] = await Promise.all([courierApi.getMe(), courierApi.getVehicles()]);
-      setProfile(me);
-      setVehiclesCount(vehicles.length);
-
-      if (me.status === 'active') {
-        try {
-          const checkinStatus = await dailyCheckInApi.getTodayStatus();
-          setCheckInStatus(checkinStatus);
-        } catch { }
-        try {
-          const myTasks = await deliveryTasksApi.getMyTasks();
-          setMyTasksCount(myTasks.length);
-        } catch {
-          setMyTasksCount(0);
-        }
+      const profile = await deliveryPointApi.getMe();
+      setMe(profile);
+      setFirstName(profile.first_name || '');
+      setLastName(profile.last_name || '');
+      setEmail(profile.email || '');
+      setTrackingListName(profile.tracking_list_name || '');
+      setTrackingListDescription(profile.tracking_list_description || '');
+      setAboutText(profile.about_text || '');
+      const sourcePoints =
+        profile.status === 'active' && profile.requested_points.length === 0
+          ? profile.points
+          : profile.requested_points;
+      const ids = sourcePoints.map((item) => item.id);
+      setSelectedPointIds(ids);
+      const meta: Record<number, PointMeta> = {};
+      for (const p of sourcePoints) {
+        meta[p.id] = { name: p.name, address: p.address };
       }
-
-      if (me.status === 'draft' && typeof window !== 'undefined' && !sessionStorage.getItem(HELPER_SESSION_KEY)) {
-        sessionStorage.setItem(HELPER_SESSION_KEY, '1');
+      setSelectedPointsMeta(meta);
+      if (profile.status === 'active') {
+        const tasks = await deliveryTasksApi.getTasks();
+        setIncomingCount(tasks.length);
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('errorLoading'));
@@ -92,279 +80,288 @@ export default function DashboardPage() {
     }
   };
 
-  const refreshCheckInStatus = async () => {
-    setRefreshingCheckIn(true);
-    try {
-      const checkinStatus = await dailyCheckInApi.getTodayStatus();
-      setCheckInStatus(checkinStatus);
-      toast.success(t('dailyCheckIn.refreshed'));
-    } catch {
-      toast.error(t('errorLoading'));
-    } finally {
-      setRefreshingCheckIn(false);
-    }
-  };
+  const statusLabel = useMemo(() => {
+    if (me?.status === 'active') return t('statusActive');
+    if (me?.status === 'pending_review') return t('statusPending');
+    if (me?.status === 'rejected') return t('statusRejected');
+    if (me?.status === 'blocked') return t('statusBlocked');
+    return t('statusDraft');
+  }, [me?.status, t]);
 
-  const handleSubmit = async () => {
-    setSubmitting(true);
+  const addPointWithMeta = useCallback((id: number, name: string, address: string | null) => {
+    setSelectedPointIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    setSelectedPointsMeta((prev) => ({
+      ...prev,
+      [id]: { name, address },
+    }));
+  }, []);
+
+  const handleAddFromMap = useCallback((point: RegionDeliveryPoint) => {
+    addPointWithMeta(point.id, point.name, point.address);
+  }, [addPointWithMeta]);
+
+  const handleAddFromRadius = useCallback((dp: DeliveryPointInRadiusItem['delivery_point']) => {
+    addPointWithMeta(dp.id, dp.name, dp.address);
+  }, [addPointWithMeta]);
+
+  const removePoint = useCallback((id: number) => {
+    setSelectedPointIds((prev) => prev.filter((x) => x !== id));
+    setSelectedPointsMeta((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  }, []);
+
+  const existingPointIds = useMemo(() => new Set(selectedPointIds), [selectedPointIds]);
+  const handleSearchLocation = useCallback((lat: number, lon: number) => {
+    setMapSearchCenter({ lat, lon });
+  }, []);
+
+  const sidebarRows = useMemo(
+    () =>
+      selectedPointIds.map((id) => {
+        const m = selectedPointsMeta[id];
+        return {
+          id,
+          name: m?.name ?? `${tOnboarding('sidebarFallbackName')} ${id}`,
+          address: m?.address ?? null,
+        };
+      }),
+    [selectedPointIds, selectedPointsMeta, tOnboarding]
+  );
+
+  const submitApplication = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!me) return;
+    setIsSaving(true);
+    setError(null);
     try {
-      await courierApi.submitApplication();
-      setSubmitConfirmOpen(false);
+      await deliveryPointApi.updateMe({
+        first_name: firstName.trim() || null,
+        last_name: lastName.trim() || null,
+        email: email.trim() || null,
+      });
+      await deliveryPointApi.upsertTrackingList({
+        name: trackingListName.trim(),
+        description: trackingListDescription.trim() || null,
+        delivery_point_ids: selectedPointIds,
+      });
+      await deliveryPointApi.submitApplication({
+        about_text: aboutText.trim(),
+        delivery_point_ids: selectedPointIds,
+      });
       await load();
-      toast.success(tOnboarding('submitSuccess'));
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : tOnboarding('submitError'));
+      setError(err instanceof Error ? err.message : t('submitError'));
     } finally {
-      setSubmitting(false);
+      setIsSaving(false);
     }
   };
-
-  const isPendingReview = profile?.status === 'pending' || profile?.status === 'pending_review';
-  const isActive = profile?.status === 'active';
-  const dailyCheckInApproved = isActive && checkInStatus?.checkin?.status === 'approved';
-  const statusLabel = isActive
-    ? t('statusActive')
-    : profile?.status === 'approved' ? t('statusApproved')
-    : profile?.status === 'rejected' ? t('statusRejected')
-    : isPendingReview ? t('statusPending')
-    : t('statusDraft');
 
   if (isLoading) {
     return (
-      <RequireCourierAuth>
+      <RequirePointAuth>
         <PageLoading fullPage />
-      </RequireCourierAuth>
+      </RequirePointAuth>
     );
   }
 
   return (
-    <RequireCourierAuth>
-      <div className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-            <p className="text-gray-600 mt-2">{isActive ? t('subtitleActive') : t('subtitle')}</p>
-          </div>
+    <RequirePointAuth>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full bg-gray-50">
+        <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
+        <p className="text-muted-foreground mb-8">{t('subtitle')}</p>
 
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertTitle>{t('errorLoading')}</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertTitle>{t('error')}</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-          {isActive && checkInStatus && (() => {
-            const checkin = checkInStatus.checkin;
-            const status = checkin?.status;
-
-            if (!checkin || status === 'pending') {
-              return (
-                <Link href="/dashboard/daily-checkin">
-                  <div className="mb-6 p-4 rounded-lg border-2 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 rounded-full bg-amber-500">
-                        <ClipboardCheck className="h-6 w-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-amber-900">{t('dailyCheckIn.title')}</h3>
-                        <p className="text-sm text-amber-700">{t('dailyCheckIn.required')}</p>
-                      </div>
-                      <AlertTriangle className="h-6 w-6 text-amber-500" />
+        {me?.status === 'active' && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Link href="/dashboard/delivery-tasks">
+                <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                  <div className="mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
+                      <Package className="h-6 w-6 text-amber-600" />
                     </div>
                   </div>
-                </Link>
-              );
-            }
-
-            if (status === 'pending_review') {
-              return (
-                <div className="mb-6 p-4 rounded-lg border-2 border-blue-400 bg-blue-50">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-blue-500">
-                      <ClipboardCheck className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900">{t('dailyCheckIn.pendingReview')}</h3>
-                      <p className="text-sm text-blue-700">{t('dailyCheckIn.pendingReviewDescription')}</p>
-                    </div>
-                    <button type="button" onClick={refreshCheckInStatus} disabled={refreshingCheckIn} aria-label={t('dailyCheckIn.refresh')} className="shrink-0 p-2 rounded-full text-blue-600 hover:bg-blue-100 hover:text-blue-800 disabled:opacity-50 transition-colors">
-                      <RefreshCw className={`h-5 w-5 ${refreshingCheckIn ? 'animate-spin' : ''}`} />
-                    </button>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('incomingTitle')}</h3>
+                  <p className="text-sm text-gray-600">{t('incomingDescription', { count: incomingCount })}</p>
                 </div>
-              );
-            }
-
-            if (status === 'approved') {
-              return (
-                <div className="mb-6 p-4 rounded-lg border-2 border-green-400 bg-green-50">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-green-500">
-                      <CheckCircle className="h-6 w-6 text-white" />
+              </Link>
+              <Link href="/dashboard/delivery-tasks/history">
+                <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                  <div className="mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+                      <History className="h-6 w-6 text-green-600" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-green-900">{t('dailyCheckIn.approved')}</h3>
-                      <p className="text-sm text-green-700">{t('dailyCheckIn.approvedDescription')}</p>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('historyTitle')}</h3>
+                  <p className="text-sm text-gray-600">{t('historyDescription')}</p>
+                </div>
+              </Link>
+              <Link href="/dashboard/points-management">
+                <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
+                  <div className="mb-3">
+                    <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <MapPin className="h-6 w-6 text-blue-600" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('managePointsTitle')}</h3>
+                  <p className="text-sm text-gray-600">{t('managePointsDescription')}</p>
+                </div>
+              </Link>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900">{t('statistics')}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-500 rounded-lg">
+                      <UserCircle2 className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-blue-700">{t('status')}</p>
+                      <p className="text-lg font-bold text-blue-900">{statusLabel}</p>
                     </div>
                   </div>
                 </div>
-              );
-            }
-
-            if (status === 'rejected') {
-              return (
-                <Link href="/dashboard/daily-checkin">
-                  <div className="mb-6 p-4 rounded-lg border-2 border-red-400 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 rounded-full bg-red-500">
-                        <AlertTriangle className="h-6 w-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-red-900">{t('dailyCheckIn.rejected')}</h3>
-                        <p className="text-sm text-red-700">{checkin.reject_reason || t('dailyCheckIn.rejectedDescription')}</p>
-                      </div>
+                <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-teal-500 rounded-lg">
+                      <Package className="h-6 w-6 text-white" />
                     </div>
-                  </div>
-                </Link>
-              );
-            }
-
-            return null;
-          })()}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <Link href="/dashboard/profile">
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                <div className="mb-3">
-                  <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                    <User className="h-6 w-6 text-green-600" />
+                    <div>
+                      <p className="text-sm text-teal-700">{t('linkedPoints')}</p>
+                      <p className="text-2xl font-bold text-teal-900">{me?.points.length ?? 0}</p>
+                    </div>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('profileCard')}</h3>
-                <p className="text-sm text-gray-600">{t('profileCardDescription')}</p>
-              </div>
-            </Link>
-
-            <Link href="/dashboard/vehicles">
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                <div className="mb-3">
-                  <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <Car className="h-6 w-6 text-purple-600" />
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('vehiclesCard')}</h3>
-                <p className="text-sm text-gray-600">{t('vehiclesCardDescription')}</p>
-              </div>
-            </Link>
-
-            {isActive && (
-              <>
-                {dailyCheckInApproved ? (
-                  <Link href="/dashboard/delivery-tasks">
-                    <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full relative">
-                      {myTasksCount > 0 && (
-                        <div className="absolute top-4 right-4 flex h-6 min-w-6 items-center justify-center rounded-full bg-green-500 px-2 text-xs font-bold text-white">
-                          {myTasksCount}
-                        </div>
-                      )}
-                      <div className="mb-3">
-                        <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
-                          <Package className="h-6 w-6 text-amber-600" />
-                        </div>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('deliveryTasksCard')}</h3>
-                      <p className="text-sm text-gray-600">
-                        {myTasksCount > 0 ? t('deliveryTasksCardActive', { count: myTasksCount }) : t('deliveryTasksCardDescription')}
-                      </p>
+                <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-500 rounded-lg">
+                      <TrendingUp className="h-6 w-6 text-white" />
                     </div>
-                  </Link>
-                ) : (
-                  <div className="bg-gray-100 rounded-lg shadow-sm p-6 h-full relative opacity-75 cursor-not-allowed border border-gray-200">
-                    <div className="mb-3">
-                      <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center">
-                        <Package className="h-6 w-6 text-gray-500" />
-                      </div>
+                    <div>
+                      <p className="text-sm text-amber-700">{t('activeDeliveries')}</p>
+                      <p className="text-2xl font-bold text-amber-900">{incomingCount}</p>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-500 mb-2">{t('deliveryTasksCard')}</h3>
-                    <p className="text-sm text-gray-500">{t('deliveryTasksRequireCheckIn')}</p>
-                  </div>
-                )}
-                <Link href="/dashboard/delivery-tasks/history">
-                  <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <div className="mb-3">
-                      <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                        <History className="h-6 w-6 text-green-600" />
-                      </div>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('orderHistoryCard')}</h3>
-                    <p className="text-sm text-gray-600">{t('orderHistoryCardDescription')}</p>
-                  </div>
-                </Link>
-              </>
-            )}
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900">{t('statistics')}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-500 rounded-lg">
-                    <Car className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-purple-700">{t('vehiclesCount')}</p>
-                    <p className="text-2xl font-bold text-purple-900">{vehiclesCount}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-500 rounded-lg">
-                    <Send className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-green-700">{t('status')}</p>
-                    <p className="text-lg font-bold text-green-900">{statusLabel}</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
+        )}
 
-          <div className="flex justify-end">
-            {isActive ? (
-              <p className="text-green-600 font-medium flex items-center gap-2">
-                <CheckCircle className="h-5 w-5" />
-                {t('statusActive')}
-              </p>
-            ) : isPendingReview ? (
-              <p className="text-gray-600 font-medium flex items-center gap-2">
-                <Send className="h-5 w-5 text-amber-600" />
-                {t('statusPending')}
-              </p>
-            ) : profile?.can_submit ? (
-              <Button size="lg" onClick={() => setSubmitConfirmOpen(true)} disabled={submitting}>
-                <Send className="h-5 w-5 mr-2" />
-                {submitting ? tOnboarding('submitting') : t('submitForReview')}
-              </Button>
-            ) : null}
-          </div>
-        </div>
+        {me?.status === 'pending_review' && (
+          <Alert className="border-amber-300 bg-amber-50">
+            <Clock3 className="h-4 w-4" />
+            <AlertTitle>{t('pendingTitle')}</AlertTitle>
+            <AlertDescription>{t('pendingDescription')}</AlertDescription>
+          </Alert>
+        )}
+
+        {(me?.status === 'draft' || me?.status === 'rejected') && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('formTitle')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {me.status === 'rejected' && (
+                <Alert variant="destructive" className="mb-4">
+                  <XCircle className="h-4 w-4" />
+                  <AlertTitle>{t('rejectedTitle')}</AlertTitle>
+                  <AlertDescription>{me.application_reject_reason || t('rejectedDescription')}</AlertDescription>
+                </Alert>
+              )}
+              <form className="space-y-6" onSubmit={submitApplication}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Input value={me.phone_e164} readOnly disabled placeholder={t('phonePlaceholder')} />
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t('emailPlaceholder')}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Input
+                    value={trackingListName}
+                    onChange={(e) => setTrackingListName(e.target.value)}
+                    placeholder={t('trackingListNamePlaceholder')}
+                  />
+                  <Input
+                    value={trackingListDescription}
+                    onChange={(e) => setTrackingListDescription(e.target.value)}
+                    placeholder={t('trackingListDescriptionPlaceholder')}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Input
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder={t('firstNamePlaceholder')}
+                  />
+                  <Input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder={t('lastNamePlaceholder')}
+                  />
+                </div>
+                <textarea
+                  value={aboutText}
+                  onChange={(e) => setAboutText(e.target.value)}
+                  placeholder={t('aboutPlaceholder')}
+                  className="flex min-h-[110px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                  <div className="lg:col-span-2 space-y-0">
+                    <div className="bg-white rounded-lg shadow-sm p-4 border border-border">
+                      <h2 className="text-lg font-semibold text-gray-900 mb-4">{tOnboarding('mapTitle')}</h2>
+                      <p className="text-sm text-gray-600 mb-4 whitespace-pre-line">{tOnboarding('mapLegend')}</p>
+                      <TrackingListMap
+                        regionId={DEFAULT_REGION_ID}
+                        selectedIds={selectedPointIds}
+                        onAddPoint={handleAddFromMap}
+                        onRemovePoint={removePoint}
+                        searchCenter={mapSearchCenter}
+                      />
+                    </div>
+                    <TrackingAddressSearchSection
+                      existingPointIds={existingPointIds}
+                      onPointAdded={handleAddFromRadius}
+                      onSearchLocation={handleSearchLocation}
+                    />
+                  </div>
+                  <div className="lg:col-span-1">
+                    <TrackingSelectedPointsSidebar points={sidebarRows} onRemove={removePoint} />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSaving || !trackingListName.trim() || !aboutText.trim() || selectedPointIds.length === 0}
+                >
+                  {isSaving ? t('submitting') : t('submit')}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {me?.status === 'blocked' && (
+          <Alert variant="destructive">
+            <AlertTitle>{t('blockedTitle')}</AlertTitle>
+            <AlertDescription>{t('blockedDescription')}</AlertDescription>
+          </Alert>
+        )}
       </div>
-
-      <Dialog open={submitConfirmOpen} onOpenChange={setSubmitConfirmOpen}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>{tOnboarding('submit')}</DialogTitle>
-            <DialogDescription>{tOnboarding('submitConfirm')}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSubmitConfirmOpen(false)} disabled={submitting}>{tOnboarding('cancel')}</Button>
-            <Button onClick={handleSubmit} disabled={submitting}>{submitting ? tOnboarding('submitting') : tOnboarding('submit')}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </RequireCourierAuth>
+    </RequirePointAuth>
   );
 }

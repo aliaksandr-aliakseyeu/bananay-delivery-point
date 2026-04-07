@@ -6,32 +6,32 @@
     "becomeCourier": "Become a courier"
   },
   "Hero": {
-    "title": "Last-mile delivery for couriers",
-    "subtitle": "Join Bananay Courier. Deliver orders from distribution centers to recipients — flexible and convenient.",
+    "title": "Track deliveries to your points",
+    "subtitle": "Bananay Delivery Point helps point owners monitor incoming and completed deliveries for selected addresses.",
     "signInButton": "Sign in",
-    "registerButton": "Become a courier"
+    "registerButton": "Connect points"
   },
   "HowItWorks": {
     "title": "How it works",
-    "step1Title": "Get the goods",
-    "step1Desc": "Pick up the cargo from the distribution center.",
-    "step2Title": "Deliver to the store",
-    "step2Desc": "Deliver goods to the nearest retail outlets.",
-    "step3Title": "Complete the delivery",
-    "step3Desc": "Confirm the transfer of goods."
+    "step1Title": "Add your points",
+    "step1Desc": "Build your point list on the map or using address search.",
+    "step2Title": "Submit for moderation",
+    "step2Desc": "An admin reviews your request and confirms access to points.",
+    "step3Title": "Track deliveries",
+    "step3Desc": "After approval, see active deliveries and full history for your points."
   },
   "WhyBecomeCourier": {
-    "title": "Why become a courier",
-    "benefit1": "Short routes",
-    "benefit2": "Delivery from nearby DCs",
-    "benefit3": "Regular orders",
-    "benefit4": "Goods for stores and cafes",
-    "benefit5": "Fast payments",
-    "benefit6": "Payment for each delivery"
+    "title": "Why point owners use it",
+    "benefit1": "One dashboard for all your points",
+    "benefit2": "Clear status for every delivery",
+    "benefit3": "Delivery history in one place",
+    "benefit4": "Add new points with map tools",
+    "benefit5": "Controlled updates through moderation",
+    "benefit6": "Fast phone OTP access"
   },
   "HomeCta": {
-    "title": "Ready to start delivering?",
-    "button": "Become a courier"
+    "title": "Ready to connect your points?",
+    "button": "Start onboarding"
   },
   "Auth": {
     "courier": {
@@ -59,8 +59,8 @@
     }
   },
   "Footer": {
-    "tagline": "Last-mile delivery for couriers. Bananay — connecting distribution centers and recipients.",
-    "copyright": "© Bananay Courier. All rights reserved."
+    "tagline": "Bananay Delivery Point - delivery control for your points in one dashboard.",
+    "copyright": "© Bananay Delivery Point. All rights reserved."
   },
   "LoginPage": {
     "title": "Bananay — for couriers",
@@ -221,6 +221,96 @@
         "description": "Photograph the cargo compartment of the vehicle."
       }
     }
+  },
+  "TrackingOnboarding": {
+    "mapTitle": "Delivery points map",
+    "mapLegend": "Green markers — points in your list\nOrange markers — available to add\nClick a marker to add or remove",
+    "legendTitle": "Legend:",
+    "legendInList": "In list ({count})",
+    "legendAvailable": "Available to add",
+    "filtersTitle": "Filters",
+    "filtersLayers": "Layers",
+    "filterInList": "Points in list",
+    "filterAvailable": "Available points",
+    "popupProcessing": "…",
+    "popupAddToList": "Add to list",
+    "popupRemoveFromList": "Remove from list",
+    "addressSectionTitle": "Add points by address",
+    "addressSectionDescription": "Enter an address to find nearby delivery points within 300 meters.",
+    "addressPlaceholder": "Enter address…",
+    "addressMinChars": "Enter at least 3 characters",
+    "addressNoResults": "No addresses found",
+    "addressSearchingPoints": "Searching nearby points…",
+    "addressFoundPoints": "Found points: {count}",
+    "addressDistanceMeters": "Distance: {meters} m",
+    "addressAddButton": "Add",
+    "addressAlreadyInList": "Already in list",
+    "addressNoPointsFound": "No delivery points within 300 m of this address.",
+    "addressErrorSearching": "Could not load nearby points.",
+    "addressErrorAdding": "Could not add point.",
+    "sidebarTitle": "Points in list",
+    "sidebarEmptyTitle": "List is empty",
+    "sidebarEmptyHint": "Add points from the map or by address below the map.",
+    "sidebarRemoveAria": "Remove from list",
+    "sidebarFallbackName": "Point"
+  },
+  "DeliveryPointDashboard": {
+    "title": "Delivery Point Dashboard",
+    "subtitle": "Submit your profile and points for moderation.",
+    "error": "Error",
+    "errorLoading": "Failed to load profile data.",
+    "incomingTitle": "Incoming deliveries",
+    "incomingDescription": "Open list of active deliveries to your points ({count}).",
+    "historyTitle": "Delivery history",
+    "historyDescription": "View completed and failed deliveries.",
+    "statistics": "Statistics",
+    "status": "Status",
+    "statusDraft": "Draft",
+    "statusPending": "Pending review",
+    "statusActive": "Active",
+    "statusRejected": "Rejected",
+    "statusBlocked": "Blocked",
+    "linkedPoints": "Linked points",
+    "activeDeliveries": "Active deliveries",
+    "activeListTitle": "Manage delivery points",
+    "activeListDescription": "Add or remove points in your tracking list.",
+    "activeListModerationTitle": "Moderation required for new points",
+    "activeListModerationDescription": "Newly added points will show deliveries only after admin moderation.",
+    "activeListSubmit": "Send list update for moderation",
+    "activeListSaved": "List update sent for moderation.",
+    "activeListSaveError": "Failed to send list update.",
+    "activeListRequirePoints": "Add at least one point to continue.",
+    "managePointsTitle": "Manage delivery points",
+    "managePointsDescription": "Add new points to your list (new points require moderation).",
+    "backToDashboard": "Back to dashboard",
+    "pendingTitle": "Application under review",
+    "pendingDescription": "Your data has been submitted. Wait for admin approval.",
+    "formTitle": "Tell us about yourself and your points",
+    "rejectedTitle": "Application rejected",
+    "rejectedDescription": "Please update the form and submit again.",
+    "firstNamePlaceholder": "First name",
+    "lastNamePlaceholder": "Last name",
+    "phonePlaceholder": "Phone number",
+    "emailPlaceholder": "Email",
+    "trackingListNamePlaceholder": "Tracking list name",
+    "trackingListDescriptionPlaceholder": "Tracking list description (optional)",
+    "defaultTrackingListName": "My tracking list",
+    "aboutPlaceholder": "Information about you and your delivery point role",
+    "pointsSectionTitle": "Build your tracking points list",
+    "addressSearchPlaceholder": "Search address to find nearby points",
+    "searchButton": "Search",
+    "searchingPoints": "Searching nearby delivery points...",
+    "addPointButton": "Add",
+    "removePointButton": "Remove",
+    "addressSearchError": "Failed to search address.",
+    "pointsSearchError": "Failed to load nearby delivery points.",
+    "pointIdsPlaceholder": "Tracking point IDs (e.g. 101, 205, 300)",
+    "pointIdsPreview": "Selected points: {count}",
+    "submit": "Submit for approval",
+    "submitting": "Submitting...",
+    "submitError": "Failed to submit application.",
+    "blockedTitle": "Account blocked",
+    "blockedDescription": "Contact Bananay admin for details."
   },
   "DeliveryTasks": {
     "title": "Delivery tasks",

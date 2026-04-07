@@ -6,7 +6,7 @@ import { HeroSection } from '@/components/hero/hero-section';
 import { RedirectWhenAuthenticated } from '@/components/auth/redirect-when-authenticated';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Check } from 'lucide-react';
+import { Check, ListChecks, MapPinned, ShieldCheck } from 'lucide-react';
 
 export default function HomePage() {
   const t = useTranslations('HowItWorks');
@@ -33,9 +33,8 @@ export default function HomePage() {
                   <span className="text-[#22c55e]">1 </span>
                   {t('step1Title')}
                 </h3>
-                <div className="my-0 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/boxes.png" alt="" className="h-auto w-[11rem] object-contain" />
+                <div className="my-0 flex items-center justify-center rounded-full bg-blue-50 p-5">
+                  <MapPinned className="h-12 w-12 text-blue-700" />
                 </div>
                 <p className="mt-0 text-sm text-gray-600">{t('step1Desc')}</p>
               </Card>
@@ -44,9 +43,8 @@ export default function HomePage() {
                   <span className="text-[#22c55e]">2 </span>
                   {t('step2Title')}
                 </h3>
-                <div className="my-0 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/shop.png" alt="" className="h-auto w-[11rem] object-contain" />
+                <div className="my-0 flex items-center justify-center rounded-full bg-amber-50 p-5">
+                  <ListChecks className="h-12 w-12 text-amber-600" />
                 </div>
                 <p className="mt-0 text-sm text-gray-600">{t('step2Desc')}</p>
               </Card>
@@ -55,9 +53,8 @@ export default function HomePage() {
                   <span className="text-[#22c55e]">3 </span>
                   {t('step3Title')}
                 </h3>
-                <div className="my-0 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/app.png" alt="" className="h-auto w-[11rem] object-contain" />
+                <div className="my-0 flex items-center justify-center rounded-full bg-green-50 p-5">
+                  <ShieldCheck className="h-12 w-12 text-green-600" />
                 </div>
                 <p className="mt-0 text-sm text-gray-600">{t('step3Desc')}</p>
               </Card>
@@ -72,7 +69,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Почему стоит стать курьером */}
+        {/* Почему использовать отслеживание точек */}
         <section className="bg-gray-50 py-8 md:py-10">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <h2 className="mb-6 text-center text-2xl font-bold text-[#1e3a8a] md:text-3xl">

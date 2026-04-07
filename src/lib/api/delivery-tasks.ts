@@ -1,97 +1,63 @@
-import { API_BASE_URL } from '../constants';
 import { apiClient } from './client';
 
 export interface CourierDeliveryTask {
-  task_id: number;
+  item_point_id: number;
+  task_id?: number;
   order_id: number;
-  order_number: string;
-  /** Pickup point: distribution center */
-  from_address: string | null;
-  from_lat: number;
-  from_lon: number;
-  /** Delivery point: final recipient */
-  to_address: string;
-  to_lat: number;
-  to_lon: number;
-  /** SKU info */
-  sku_name: string;
-  sku_code: string;
-  quantity: number;
-  /** Task status: available, assigned, in_transit, delivered, failed */
-  status: string;
-  /** Item point QR token — shown to DC worker when picking up (status: assigned) */
-  qr_token?: string | null;
-  taken_at?: string | null;
-  delivered_at?: string | null;
-  fail_reason?: string | null;
-}
-
-export interface CompletedTask {
-  task_id: number;
-  order_id: number;
-  order_number: string;
-  delivered_at: string;
+  order_number: string | null;
+  order_status: string;
+  point_status: string;
+  delivery_point_id: number;
   delivery_point_name: string | null;
   delivery_point_address: string | null;
   sku_name: string | null;
   quantity: number;
+  courier_id: string | null;
+  courier_phone: string | null;
+  courier_name: string | null;
+  expected_pickup_date: string | null;
+  delivery_deadline: string | null;
+  delivered_at: string | null;
+  updated_at: string;
+  // Compatibility fields for reused components
+  from_address: string | null;
+  from_lat: number;
+  from_lon: number;
+  to_address: string | null;
+  to_lat: number;
+  to_lon: number;
+  status: string;
+  qr_token?: string | null;
 }
 
-export interface LocationConfig {
-  send_interval_sec: number;
-  poll_interval_sec: number;
-  stale_after_sec: number;
-}
-
-export interface LocationReportBody {
-  lat: number;
-  lon: number;
-  accuracy?: number;
-  device_info?: string;
-}
-
-const BASE = '/api/v1/courier';
+export interface CompletedTask extends CourierDeliveryTask {}
 
 export const deliveryTasksApi = {
-  getTasks: () =>
-    apiClient.get<CourierDeliveryTask[]>(`${BASE}/delivery-tasks`),
+  getTasks: async () => {
+    const items = await apiClient.get<CourierDeliveryTask[]>('/api/v1/point/deliveries');
+    return items.map((x) => ({
+      ...x,
+      task_id: x.item_point_id,
+      from_address: null,
+      from_lat: 0,
+      from_lon: 0,
+      to_address: x.delivery_point_address,
+      to_lat: 0,
+      to_lon: 0,
+      status: x.point_status,
+    }));
+  },
 
-  getMyTasks: () =>
-    apiClient.get<CourierDeliveryTask[]>(`${BASE}/delivery-tasks/my`),
-
-  getCompletedTasks: () =>
-    apiClient.get<CompletedTask[]>(`${BASE}/delivery-tasks/completed`),
-
-  getLocationConfig: () =>
-    apiClient.get<LocationConfig>(`${BASE}/delivery-tasks/location-config`),
-
-  reportLocation: (taskId: number, body: LocationReportBody) =>
-    apiClient.post<{ task_id: number; lat: number; lon: number }>(
-      `${BASE}/delivery-tasks/${taskId}/location`,
-      body
-    ),
-
-  takeTask: (taskId: number) =>
-    apiClient.post<{ task_id: number; status: string }>(
-      `${BASE}/delivery-tasks/${taskId}/take`
-    ),
-
-  cancelTask: (taskId: number) =>
-    apiClient.post<{ task_id: number; status: string }>(
-      `${BASE}/delivery-tasks/${taskId}/cancel`
-    ),
-
-  confirmDelivery: (taskId: number, qrToken: string) =>
-    apiClient.post<{ task_id: number; status: string }>(
-      `${BASE}/delivery-tasks/${taskId}/confirm-delivery`,
-      { qr_token: qrToken }
-    ),
+  getCompletedTasks: async () => {
+    const res = await apiClient.get<{ total: number; items: CompletedTask[] }>(
+      '/api/v1/point/deliveries/history?limit=200&offset=0'
+    );
+    return res.items;
+  },
+  getMyTasks: async () => [],
+  getLocationConfig: async () => ({ send_interval_sec: 30, poll_interval_sec: 30, stale_after_sec: 120 }),
+  reportLocation: async (_taskId: number, _body: unknown) => ({ task_id: 0, lat: 0, lon: 0 }),
+  takeTask: async (_taskId: number) => ({ task_id: 0, status: 'unsupported' }),
+  cancelTask: async (_taskId: number) => ({ task_id: 0, status: 'unsupported' }),
+  confirmDelivery: async (_taskId: number, _qrToken: string) => ({ task_id: 0, status: 'unsupported' }),
 };
-
-export function getMediaUrl(mediaId: string): string {
-  return `${API_BASE_URL}/api/v1/courier/media/${mediaId}`;
-}
-
-export function getTaskEventsUrl(token: string): string {
-  return `${API_BASE_URL}/api/v1/courier/delivery-tasks/events?token=${encodeURIComponent(token)}`;
-}

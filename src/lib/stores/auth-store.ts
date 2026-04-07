@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { courierAuthApi } from '../api/courier-auth';
 
-const STORAGE_KEY = 'courier-auth-storage';
+const STORAGE_KEY = 'point-auth-storage';
 
 interface AuthState {
   token: string | null;
@@ -44,7 +44,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
         if (typeof window !== 'undefined') {
-          sessionStorage.removeItem('courier-submit-helper-shown');
+          sessionStorage.removeItem('point-submit-helper-shown');
         }
         set({
           token: null,

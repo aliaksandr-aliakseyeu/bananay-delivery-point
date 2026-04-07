@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '../constants';
 
-const STORAGE_KEY = 'courier-auth-storage';
+const STORAGE_KEY = 'point-auth-storage';
 let refreshPromise: Promise<string | null> | null = null;
 
 type StoredAuthPayload = {
@@ -68,7 +68,7 @@ async function refreshCourierToken(): Promise<string | null> {
   refreshPromise = (async () => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) return null;
-    const res = await fetch(`${API_BASE_URL}/api/v1/auth/courier/refresh`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/auth/delivery-point/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken }),
@@ -115,7 +115,7 @@ export async function fetchCourierApi<T>(
     });
 
   let res = await doRequest();
-  const isCourierRefreshRequest = endpoint.includes('/api/v1/auth/courier/refresh');
+  const isCourierRefreshRequest = endpoint.includes('/api/v1/auth/delivery-point/refresh');
   if (res.status === 401 && !isCourierRefreshRequest) {
     const refreshedAccessToken = await refreshCourierToken();
     if (refreshedAccessToken) {
