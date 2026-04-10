@@ -30,16 +30,37 @@ export type RoleFooterConfig = {
   otherRoles: RoleFooterLink[];
 };
 
-export const ROLE_FOOTER_CONFIG: RoleFooterConfig = {
-  roleLabel: APP_NAME,
-  homeHref: MAIN_SITE_URL,
-  contactEmail: 'hello@bananay.pro',
-  contactPhoneHref: 'tel:+79183842676',
-  contactPhoneLabel: '+7 918 384 2676',
-  otherRoles: [
-    { translationKey: 'producer', href: APP_PRODUCER_URL },
-    { translationKey: 'drivers', href: APP_TRUCK_URL },
-    { translationKey: 'distribution', href: APP_HUB_URL },
-    { translationKey: 'courier', href: APP_COURIER_URL },
-  ],
-};
+function localizeAppUrl(href: string, locale: string) {
+  const normalizedLocale = locale === 'ru' ? 'ru' : 'en';
+
+  if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) {
+    return href;
+  }
+
+  try {
+    const url = new URL(href);
+    const pathnameWithoutLocale = url.pathname.replace(/\/(en|ru)\/?$/, '');
+    const normalizedPath = pathnameWithoutLocale === '/' ? '' : pathnameWithoutLocale.replace(/\/$/, '');
+    url.pathname = `${normalizedPath}/${normalizedLocale}`;
+    return url.toString();
+  } catch {
+    const normalizedHref = href.replace(/\/(en|ru)\/?$/, '').replace(/\/$/, '');
+    return `${normalizedHref}/${normalizedLocale}`;
+  }
+}
+
+export function getRoleFooterConfig(locale: string): RoleFooterConfig {
+  return {
+    roleLabel: APP_NAME,
+    homeHref: localizeAppUrl(MAIN_SITE_URL, locale),
+    contactEmail: 'hello@bananay.pro',
+    contactPhoneHref: 'tel:+79183842676',
+    contactPhoneLabel: '+7 918 384 2676',
+    otherRoles: [
+      { translationKey: 'producer', href: localizeAppUrl(APP_PRODUCER_URL, locale) },
+      { translationKey: 'drivers', href: localizeAppUrl(APP_TRUCK_URL, locale) },
+      { translationKey: 'distribution', href: localizeAppUrl(APP_HUB_URL, locale) },
+      { translationKey: 'courier', href: localizeAppUrl(APP_COURIER_URL, locale) },
+    ],
+  };
+}
