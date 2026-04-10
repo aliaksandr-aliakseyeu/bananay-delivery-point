@@ -75,7 +75,7 @@ export function CourierLoginForm() {
     return (
       <div className="space-y-4">
         <div>
-          <Label htmlFor="code">{t('code')}</Label>
+          <Label htmlFor="code" className="text-[15px]">{t('code')}</Label>
           <Input
             id="code"
             type="text"
@@ -84,7 +84,7 @@ export function CourierLoginForm() {
             placeholder={t('codePlaceholder')}
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            className="mt-1"
+            className="mt-1 h-[60px] text-[18px]"
           />
         </div>
         {error && (
@@ -96,7 +96,7 @@ export function CourierLoginForm() {
           <Button
             type="button"
             variant="outline"
-            className="flex-1"
+            className="h-[60px] flex-1 text-[17px]"
             disabled={loading}
             onClick={() => { setStep('phone'); setError(null); }}
           >
@@ -104,7 +104,7 @@ export function CourierLoginForm() {
           </Button>
           <Button
             type="button"
-            className="flex-1 bg-[#1e3a8a] hover:bg-[#1e40af]"
+            className="h-[60px] flex-1 bg-[#2b418f] text-[17px] font-semibold hover:bg-[#243778]"
             disabled={loading || code.replace(/\D/g, '').length !== 4}
             onClick={handleVerify}
           >
@@ -118,16 +118,28 @@ export function CourierLoginForm() {
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="phone">{t('phone')}</Label>
+        <Label htmlFor="phone" className="text-[15px]">{t('phone')}</Label>
         <Input
           id="phone"
           type="tel"
           placeholder={t('phonePlaceholder')}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="mt-1"
+          className="mt-1 h-[60px] text-[18px]"
         />
       </div>
+      <p className="text-[15px] text-gray-600">
+        {t('telegramBotPrefix')}{' '}
+        <a
+          href="https://t.me/bananay_otp_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-[#1e3a8a] hover:underline"
+        >
+          @bananay_otp_bot
+        </a>{' '}
+        {t('telegramBotSuffix')}
+      </p>
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
@@ -135,7 +147,7 @@ export function CourierLoginForm() {
       )}
       <Button
         type="button"
-        className="w-full bg-[#1e3a8a] hover:bg-[#1e40af]"
+        className="h-[60px] w-full bg-[#1e3a8a] text-[17px] font-semibold hover:bg-[#1e40af]"
         disabled={loading || !phone.trim()}
         onClick={handleRequestOtp}
       >

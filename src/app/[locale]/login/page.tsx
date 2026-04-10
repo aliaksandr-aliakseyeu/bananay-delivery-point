@@ -30,20 +30,24 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-full flex items-center justify-center bg-gray-50 py-12">
-      <div className="max-w-md w-full mx-4 bg-white rounded-xl p-6 sm:p-8 border border-gray-200 shadow-sm">
+      <div className="max-w-xl w-full mx-4 rounded-xl p-6 sm:p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#1e3a8a] mb-1">{tPage('title')}</h1>
-          <p className="text-gray-600">{tPage('subtitle')}</p>
+          <p className="mb-2 text-[14px] font-semibold uppercase tracking-[0.28em] text-[#7f93ba]">
+            {tPage('title')}
+          </p>
+          <h1 className="text-4xl font-bold leading-[0.95] text-[#2b418f]">
+            {tPage('subtitle')}
+          </h1>
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">{t('title')}</h2>
-          <p className="text-sm text-gray-600 mb-6">{t('description')}</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">{t('title')}</h2>
+          <p className="text-[15px] text-gray-600 mb-6">{t('description')}</p>
           <CourierLoginForm />
         </div>
 
         <div className="mt-6 text-center">
-          <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
+          <Link href="/" className="text-[15px] text-gray-600 hover:text-gray-900">
             {tPage('backHome')}
           </Link>
         </div>

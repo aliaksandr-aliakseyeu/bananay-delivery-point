@@ -1,36 +1,42 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { RedirectWhenAuthenticated } from '@/components/auth/redirect-when-authenticated';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 
 export default function HomePage() {
+  const tHero = useTranslations('Hero');
+  const tHowItWorks = useTranslations('HowItWorks');
+  const tBenefits = useTranslations('WhyBecomeCourier');
+  const tCta = useTranslations('HomeCta');
   const router = useRouter();
   const steps = [
     {
       number: '01',
-      title: 'Видите входящие поставки',
-      text: 'Что едет в ваше заведение и в каком статусе.',
+      title: tHowItWorks('step1Title'),
+      text: tHowItWorks('step1Desc'),
     },
     {
       number: '02',
-      title: 'Отслеживаете доставку',
-      text: 'Где находится поставка и когда прибудет.',
+      title: tHowItWorks('step2Title'),
+      text: tHowItWorks('step2Desc'),
     },
     {
       number: '03',
-      title: 'Смотрите историю',
-      text: 'Все прошлые доставки в одном месте.',
+      title: tHowItWorks('step3Title'),
+      text: tHowItWorks('step3Desc'),
     },
   ];
   const benefits = [
-    'Актуальный статус доставки',
-    'Что едет и когда прибудет',
-    'История всех поставок',
-    'Меньше звонков и уточнений',
-    'Понятный процесс получения',
+    tBenefits('benefit1'),
+    tBenefits('benefit2'),
+    tBenefits('benefit3'),
+    tBenefits('benefit4'),
+    tBenefits('benefit5'),
+    tBenefits('benefit6'),
   ];
 
   return (
@@ -46,11 +52,11 @@ export default function HomePage() {
           <div className="relative mx-auto flex min-h-[72vh] max-w-7xl items-center px-4 py-10 sm:px-6 md:py-14 lg:px-8">
             <div className="flex w-full flex-col justify-center">
               <h1 className="text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Все поставки в ваше заведение - под контролем.
+                {tHero('title')}
               </h1>
 
               <p className="mt-6 w-full text-lg leading-8 text-slate-100">
-                Статусы, движение и история поставок - в одном интерфейсе.
+                {tHero('subtitle')}
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
@@ -59,7 +65,7 @@ export default function HomePage() {
                   className="rounded-2xl bg-[#1e3a8a] px-6 text-base font-semibold text-white hover:bg-[#1d4ed8]"
                   onClick={() => router.push('/login')}
                 >
-                  Зарегистрироваться
+                  {tHero('registerButton')}
                 </Button>
                 <Button
                   variant="outline"
@@ -67,7 +73,7 @@ export default function HomePage() {
                   className="rounded-2xl border-white/55 bg-white/5 px-6 text-base font-semibold text-white/90 hover:bg-white/15 hover:text-white"
                   onClick={() => router.push('/login')}
                 >
-                  Войти в приложение
+                  {tHero('signInButton')}
                 </Button>
               </div>
             </div>
@@ -80,12 +86,12 @@ export default function HomePage() {
         <section className="bg-white">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
             <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Как это работает</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{tHowItWorks('title')}</p>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Как это работает для вашего заведения
+                {tHowItWorks('title')}
               </h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
-                Вы видите только то, что важно при получении товара - без лишних действий и перегруженных экранов.
+                {tHowItWorks('step3Desc')}
               </p>
             </div>
 
@@ -133,9 +139,9 @@ export default function HomePage() {
           </div>
           <div className="relative z-10 mx-auto flex max-w-7xl flex-col justify-start px-4 sm:px-6 lg:px-8">
             <div className="max-w-xl lg:pr-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Преимущества</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{tBenefits('title')}</p>
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Почему это удобно
+                {tBenefits('title')}
               </h2>
             </div>
 
@@ -157,12 +163,12 @@ export default function HomePage() {
 
         <section className="bg-white">
           <div className="mx-auto max-w-4xl px-4 pb-8 pt-12 text-center sm:px-6 lg:px-8 lg:pb-10 lg:pt-14">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Следующий шаг</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{tCta('button')}</p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-              Подключите свое заведение
+              {tCta('title')}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-              Зарегистрируйтесь или войдите, чтобы отслеживать поставки и историю.
+              {tHero('subtitle')}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -171,7 +177,7 @@ export default function HomePage() {
                 className="rounded-2xl bg-[#1e3a8a] px-6 text-base font-semibold text-white hover:bg-[#1d4ed8]"
                 onClick={() => router.push('/login')}
               >
-                Зарегистрироваться
+                {tHero('registerButton')}
               </Button>
               <Button
                 variant="outline"
@@ -179,7 +185,7 @@ export default function HomePage() {
                 className="rounded-2xl border-slate-300 bg-white px-6 text-base font-semibold text-slate-800 hover:bg-slate-50"
                 onClick={() => router.push('/login')}
               >
-                Войти в приложение
+                {tHero('signInButton')}
               </Button>
             </div>
           </div>
