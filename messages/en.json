@@ -36,12 +36,15 @@
   "Auth": {
     "courier": {
       "title": "Sign in with phone",
-      "description": "Enter your number — we'll send a code via Telegram or SMS",
+      "description": "Get your login code in Telegram.",
       "phone": "Phone number",
       "phonePlaceholder": "+1 234 567 8900",
       "getCode": "Get code",
       "code": "Code from message",
       "codePlaceholder": "0000",
+      "telegramCodeText": "Get your login code in Telegram.",
+      "telegramBotPrefix": "First time? Open Telegram bot",
+      "telegramBotSuffix": "and send your phone number once.",
       "submit": "Sign in",
       "sendingCode": "Sending...",
       "loggingIn": "Signing in...",
@@ -59,12 +62,22 @@
     }
   },
   "Footer": {
-    "tagline": "Bananay Delivery Point - delivery control for your points in one dashboard.",
-    "copyright": "© Bananay Delivery Point. All rights reserved."
+    "description": "An app for retail points: delivery control and status tracking for your locations.",
+    "otherRolesLabel": "Other roles in the network",
+    "roles": {
+      "producer": "Producers",
+      "drivers": "Drivers",
+      "distribution": "Hubs",
+      "courier": "Couriers",
+      "retail": "Retail points"
+    },
+    "backHome": "Back to Bananay home",
+    "contactsLabel": "Contacts",
+    "copyright": "© 2026 Bananay. Regional food logistics."
   },
   "LoginPage": {
-    "title": "Bananay — for couriers",
-    "subtitle": "Sign in with your phone number",
+    "title": "Sign in",
+    "subtitle": "Pickup points",
     "backHome": "← Back to home"
   },
   "Dashboard": {
