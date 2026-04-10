@@ -1,9 +1,11 @@
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
-import { APP_NAME, ROLE_FOOTER_CONFIG } from '@/lib/site-config';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { APP_NAME, getRoleFooterConfig } from '@/lib/site-config';
 
 export async function Footer() {
+  const locale = await getLocale();
   const t = await getTranslations('Footer');
+  const footerConfig = getRoleFooterConfig(locale);
 
   return (
     <footer className="border-t border-slate-200 bg-white">
@@ -36,7 +38,7 @@ export async function Footer() {
                 <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                   {t('roles.retail')}
                 </span>
-                {ROLE_FOOTER_CONFIG.otherRoles.map((role) => (
+                {footerConfig.otherRoles.map((role) => (
                   <a
                     key={role.translationKey}
                     href={role.href}
@@ -51,7 +53,7 @@ export async function Footer() {
 
           <div className="flex flex-col gap-4 text-sm text-slate-600 md:items-end md:text-right">
             <a
-              href={ROLE_FOOTER_CONFIG.homeHref}
+              href={footerConfig.homeHref}
               className="inline-flex items-center gap-2 font-medium text-slate-800 transition hover:text-slate-950 hover:underline hover:underline-offset-4"
             >
               <span aria-hidden>←</span>
@@ -63,16 +65,16 @@ export async function Footer() {
                 {t('contactsLabel')}
               </div>
               <a
-                href={`mailto:${ROLE_FOOTER_CONFIG.contactEmail}`}
+                href={`mailto:${footerConfig.contactEmail}`}
                 className="transition hover:text-slate-950"
               >
-                {ROLE_FOOTER_CONFIG.contactEmail}
+                {footerConfig.contactEmail}
               </a>
               <a
-                href={ROLE_FOOTER_CONFIG.contactPhoneHref}
+                href={footerConfig.contactPhoneHref}
                 className="transition hover:text-slate-950"
               >
-                {ROLE_FOOTER_CONFIG.contactPhoneLabel}
+                {footerConfig.contactPhoneLabel}
               </a>
             </div>
           </div>
