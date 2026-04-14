@@ -3,7 +3,7 @@
     "signIn": "Sign in",
     "dashboard": "Dashboard",
     "logout": "Log out",
-    "becomeCourier": "Become a courier"
+    "becomeCourier": "Connect points"
   },
   "Hero": {
     "title": "Track deliveries to your points",
@@ -12,7 +12,9 @@
     "registerButton": "Connect points"
   },
   "HowItWorks": {
+    "label": "How it works",
     "title": "How it works",
+    "subtitle": "Connecting points and getting delivery visibility works in three straightforward steps.",
     "step1Title": "Add your points",
     "step1Desc": "Build your point list on the map or using address search.",
     "step2Title": "Submit for moderation",
@@ -21,6 +23,7 @@
     "step3Desc": "After approval, see active deliveries and full history for your points."
   },
   "WhyBecomeCourier": {
+    "label": "Benefits",
     "title": "Why point owners use it",
     "benefit1": "One dashboard for all your points",
     "benefit2": "Clear status for every delivery",
@@ -31,7 +34,9 @@
   },
   "HomeCta": {
     "title": "Ready to connect your points?",
-    "button": "Start onboarding"
+    "button": "Start onboarding",
+    "label": "Point onboarding",
+    "subtitle": "Sign in with your phone number and start building the list of points you want to track."
   },
   "Auth": {
     "courier": {
@@ -63,7 +68,9 @@
       "errors": {
         "requestOtpFailed": "Failed to send code",
         "verifyFailed": "Invalid or expired code"
-      }
+      },
+      "successCodeSent": "Code sent",
+      "successLoggedIn": "Signed in successfully"
     }
   },
   "Footer": {
@@ -82,8 +89,9 @@
   },
   "LoginPage": {
     "title": "Sign in",
-    "subtitle": "Pickup points",
-    "backHome": "← Back to home"
+    "subtitle": "Delivery points",
+    "backHome": "← Back to home",
+    "loading": "Loading..."
   },
   "Dashboard": {
     "title": "Personal account",

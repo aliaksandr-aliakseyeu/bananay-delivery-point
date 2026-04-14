@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${SITE_TITLE} — Платформа для курьеров`,
-  description: "Доставка для курьеров. Bananay — соединяем распределительные центры и получателей.",
+  title: `${SITE_TITLE} — Платформа для точек доставки`,
+  description: "Bananay Track помогает точкам доставки отслеживать статусы, активные поступления и историю доставок по своим адресам.",
   icons: {
     icon: "/bananay-icon-transparent.png",
   },

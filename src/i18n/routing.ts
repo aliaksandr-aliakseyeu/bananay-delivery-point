@@ -13,7 +13,6 @@ export const routing = defineRouting({
     '/dashboard/daily-checkin': '/dashboard/daily-checkin',
     '/dashboard/profile': '/dashboard/profile',
     '/dashboard/vehicles': '/dashboard/vehicles',
-    '/dashboard/documents': '/dashboard/documents',
     '/dashboard/delivery-tasks': '/dashboard/delivery-tasks',
     '/dashboard/delivery-tasks/history': '/dashboard/delivery-tasks/history',
     '/dashboard/points-management': '/dashboard/points-management',
