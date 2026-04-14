@@ -1,4 +1,4 @@
-import { Link } from '@/i18n/routing';
+import { LegalDocumentPage } from '@/components/auth/legal-document-page';
 
 type Locale = 'en' | 'ru';
 
@@ -122,37 +122,12 @@ export default async function PrivacyPolicyPage({
   const page = content[(locale === 'en' ? 'en' : 'ru') as Locale];
 
   return (
-    <div className="bg-gray-50 py-10 sm:py-14">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="p-0 sm:p-0">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-            {page.title}
-          </h1>
-          <p className="mt-3 text-sm text-slate-500">{page.updatedAt}</p>
-          <p className="mt-6 text-base leading-7 text-slate-700">{page.intro}</p>
-
-          <div className="mt-8 space-y-8">
-            {page.sections.map((section) => (
-              <section key={section.title}>
-                <h2 className="text-xl font-semibold text-slate-950">{section.title}</h2>
-                <div className="mt-3 space-y-3">
-                  {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph} className="text-base leading-7 text-slate-700">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <Link href="/login" className="text-sm font-medium text-[#1e3a8a] hover:underline">
-              {page.backLabel}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+    <LegalDocumentPage
+      title={page.title}
+      updatedAt={page.updatedAt}
+      intro={page.intro}
+      backLabel={page.backLabel}
+      sections={page.sections}
+    />
   );
 }

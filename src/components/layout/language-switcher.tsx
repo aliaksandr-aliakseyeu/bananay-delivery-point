@@ -22,11 +22,12 @@ export function LanguageSwitcher() {
       {locales.map((locale) => (
         <button
           key={locale}
+          type="button"
           onClick={() => switchLocale(locale)}
           disabled={isPending}
           className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
             currentLocale === locale
-              ? 'bg-[#1e3a8a] text-white'
+              ? 'bg-primary text-white'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
           }`}
         >
