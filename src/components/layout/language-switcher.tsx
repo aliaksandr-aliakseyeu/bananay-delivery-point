@@ -3,13 +3,13 @@
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
-import { locales, localeNames, type Locale } from '@/i18n/config';
+import { visibleLocales, localeNames, type Locale } from '@/i18n/config';
 
 export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  const currentLocale = (useParams().locale as Locale) || 'ru';
+  const currentLocale = (useParams().locale as Locale) || 'en';
 
   const switchLocale = (locale: Locale) => {
     startTransition(() => {
@@ -19,7 +19,7 @@ export function LanguageSwitcher() {
 
   return (
     <div className="flex items-center gap-1 border rounded-md p-1">
-      {locales.map((locale) => (
+      {visibleLocales.map((locale) => (
         <button
           key={locale}
           type="button"

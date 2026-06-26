@@ -1,10 +1,12 @@
+'use client';
+
 import Image from 'next/image';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useLocale, useTranslations } from 'next-intl';
 import { APP_NAME, getRoleFooterConfig } from '@/lib/site-config';
 
-export async function Footer() {
-  const locale = await getLocale();
-  const t = await getTranslations('Footer');
+export function Footer() {
+  const locale = useLocale();
+  const t = useTranslations('Footer');
   const footerConfig = getRoleFooterConfig(locale);
 
   return (
@@ -85,4 +87,3 @@ export async function Footer() {
     </footer>
   );
 }
-

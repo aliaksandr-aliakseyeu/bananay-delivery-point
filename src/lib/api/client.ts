@@ -59,7 +59,7 @@ function clearAuthAndRedirect(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch {}
-  const locale = window.location.pathname.match(/^\/(en|ru)/)?.[1] || 'ru';
+  const locale = window.location.pathname.match(/^\/(en|ka|ru)/)?.[1] || 'en';
   window.location.href = `/${locale}/login`;
 }
 

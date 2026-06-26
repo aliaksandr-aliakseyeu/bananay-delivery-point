@@ -1,20 +1,39 @@
 /**
  * Название приложения для шапки и title.
- * В каждой апке (producer, courier, driver) своё значение: "Producer", "Courier", "Driver".
  */
 export const APP_NAME = 'Delivery Point';
 
 export const SITE_TITLE = `Bananay ${APP_NAME}`;
 
 export const MAIN_SITE_URL = 'https://bananay.pro';
-export const APP_PRODUCER_URL =
-  process.env.APP_PRODUCER_URL?.trim() || `${MAIN_SITE_URL}#producer`;
-export const APP_TRUCK_URL =
-  process.env.APP_TRUCK_URL?.trim() || `${MAIN_SITE_URL}#drivers`;
-export const APP_HUB_URL =
-  process.env.APP_HUB_URL?.trim() || `${MAIN_SITE_URL}#distribution`;
-export const APP_COURIER_URL =
-  process.env.APP_COURIER_URL?.trim() || `${MAIN_SITE_URL}#courier`;
+
+function resolvePublicAppUrl(
+  nextPublicValue: string | undefined,
+  fallback: string
+): string {
+  const raw = nextPublicValue?.trim();
+  if (!raw) return fallback;
+  if (raw.includes('://')) return raw;
+  return `http://${raw}`;
+}
+
+/** Must use NEXT_PUBLIC_* — read in client components (footer) during SSR hydration. */
+export const APP_PRODUCER_URL = resolvePublicAppUrl(
+  process.env.NEXT_PUBLIC_APP_PRODUCER_URL,
+  `${MAIN_SITE_URL}#producer`
+);
+export const APP_TRUCK_URL = resolvePublicAppUrl(
+  process.env.NEXT_PUBLIC_APP_TRUCK_URL,
+  `${MAIN_SITE_URL}#drivers`
+);
+export const APP_HUB_URL = resolvePublicAppUrl(
+  process.env.NEXT_PUBLIC_APP_HUB_URL,
+  `${MAIN_SITE_URL}#distribution`
+);
+export const APP_COURIER_URL = resolvePublicAppUrl(
+  process.env.NEXT_PUBLIC_APP_COURIER_URL,
+  `${MAIN_SITE_URL}#courier`
+);
 
 export type RoleFooterLink = {
   translationKey: 'producer' | 'drivers' | 'distribution' | 'courier';
@@ -31,7 +50,7 @@ export type RoleFooterConfig = {
 };
 
 function localizeAppUrl(href: string, locale: string) {
-  const normalizedLocale = locale === 'ru' ? 'ru' : 'en';
+  const normalizedLocale = locale === 'ka' ? 'ka' : 'en';
 
   if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) {
     return href;
@@ -39,12 +58,12 @@ function localizeAppUrl(href: string, locale: string) {
 
   try {
     const url = new URL(href);
-    const pathnameWithoutLocale = url.pathname.replace(/\/(en|ru)\/?$/, '');
+    const pathnameWithoutLocale = url.pathname.replace(/\/(en|ka|ru)\/?$/, '');
     const normalizedPath = pathnameWithoutLocale === '/' ? '' : pathnameWithoutLocale.replace(/\/$/, '');
     url.pathname = `${normalizedPath}/${normalizedLocale}`;
     return url.toString();
   } catch {
-    const normalizedHref = href.replace(/\/(en|ru)\/?$/, '').replace(/\/$/, '');
+    const normalizedHref = href.replace(/\/(en|ka|ru)\/?$/, '').replace(/\/$/, '');
     return `${normalizedHref}/${normalizedLocale}`;
   }
 }
