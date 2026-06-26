@@ -18,17 +18,17 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center gap-1 border rounded-md p-1">
+    <div className="flex items-center gap-1 rounded-md border border-gray-200 p-1">
       {visibleLocales.map((locale) => (
         <button
           key={locale}
           type="button"
           onClick={() => switchLocale(locale)}
           disabled={isPending}
-          className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
+          className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
             currentLocale === locale
-              ? 'bg-primary text-white'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              ? 'bg-[#1e3a8a] text-white'
+              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
           }`}
         >
           {localeNames[locale]}

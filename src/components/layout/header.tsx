@@ -22,7 +22,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-[9999] w-full border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-[9999] w-full border-b border-slate-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="section-container flex h-16 items-center justify-between">
         <Link href={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-1 shrink-0">
           <Image
@@ -38,6 +38,7 @@ export function Header() {
         </Link>
 
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher />
           {isAuthenticated ? (
             <>
               <span className="text-sm text-gray-600 truncate max-w-[140px]">{phone}</span>
@@ -45,7 +46,7 @@ export function Header() {
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="font-semibold text-muted hover:bg-red-50 hover:text-red-600"
+                className="h-auto px-4 py-1.5 text-sm font-semibold text-muted hover:bg-red-50 hover:text-red-600"
               >
                 <span className="inline-flex items-center gap-1">
                   <LogOut className="h-4 w-4" />
@@ -54,11 +55,15 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Button asChild size="sm" className="font-semibold">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="h-auto px-4 py-1.5 text-sm font-semibold hover:bg-primary/10 hover:text-primary"
+            >
               <Link href="/login">{t('signIn')}</Link>
             </Button>
           )}
-          <LanguageSwitcher />
         </div>
 
         <div className="flex md:hidden items-center gap-2">
@@ -74,16 +79,21 @@ export function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-background/95 backdrop-blur">
+        <div className="md:hidden border-t border-slate-200 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="px-4 py-4 space-y-4">
+            <LanguageSwitcher />
+
             {isAuthenticated ? (
               <>
                 <div className="text-sm font-medium text-gray-700 truncate">{phone}</div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
-                  className="w-full justify-start text-red-600 hover:bg-red-50"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="h-auto w-full justify-start px-4 py-1.5 text-sm font-semibold text-red-600 hover:bg-red-50"
                 >
                   <span className="inline-flex items-center gap-2">
                     <LogOut className="h-4 w-4" />
@@ -92,17 +102,20 @@ export function Header() {
                 </Button>
               </>
             ) : (
-              <Button asChild size="sm" className="w-full font-semibold">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="h-auto w-full justify-start px-4 py-1.5 text-sm font-semibold hover:bg-primary/10 hover:text-primary"
+              >
                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                   {t('signIn')}
                 </Link>
               </Button>
             )}
-            <LanguageSwitcher />
           </div>
         </div>
       )}
     </header>
   );
 }
-
