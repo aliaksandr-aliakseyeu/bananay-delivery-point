@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 import { SITE_TITLE } from "@/lib/site-config";
 
@@ -9,18 +10,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${SITE_TITLE} — Платформа для точек доставки`,
-  description: "Bananay Track помогает точкам доставки отслеживать статусы, активные поступления и историю доставок по своим адресам.",
+  title: `${SITE_TITLE} — Delivery point tracking`,
+  description: "Bananay Track helps delivery points monitor statuses, active deliveries, and delivery history for their addresses.",
   icons: {
     icon: "/bananay-icon-transparent.png",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} ${inter.className} antialiased`} suppressHydrationWarning>
         {children}
       </body>
