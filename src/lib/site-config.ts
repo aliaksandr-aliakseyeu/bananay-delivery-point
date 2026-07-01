@@ -72,7 +72,7 @@ export function getRoleFooterConfig(locale: string): RoleFooterConfig {
   return {
     roleLabel: APP_NAME,
     homeHref: localizeAppUrl(MAIN_SITE_URL, locale),
-    contactEmail: 'hello@bananay.pro',
+    contactEmail: 'contact@bananay.pro',
     contactPhoneHref: 'tel:+79183842676',
     contactPhoneLabel: '+7 918 384 2676',
     otherRoles: [
