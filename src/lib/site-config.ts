@@ -44,8 +44,8 @@ export type RoleFooterConfig = {
   roleLabel: string;
   homeHref: string;
   contactEmail: string;
-  contactPhoneHref: string;
-  contactPhoneLabel: string;
+  contactTelegramHref: string;
+  contactTelegramLabel: string;
   otherRoles: RoleFooterLink[];
 };
 
@@ -73,8 +73,8 @@ export function getRoleFooterConfig(locale: string): RoleFooterConfig {
     roleLabel: APP_NAME,
     homeHref: localizeAppUrl(MAIN_SITE_URL, locale),
     contactEmail: 'contact@bananay.pro',
-    contactPhoneHref: 'tel:+79183842676',
-    contactPhoneLabel: '+7 918 384 2676',
+    contactTelegramHref: 'https://t.me/kobalnov',
+    contactTelegramLabel: '@kobalnov',
     otherRoles: [
       { translationKey: 'producer', href: localizeAppUrl(APP_PRODUCER_URL, locale) },
       { translationKey: 'drivers', href: localizeAppUrl(APP_TRUCK_URL, locale) },

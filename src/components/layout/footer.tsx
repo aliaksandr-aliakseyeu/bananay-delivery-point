@@ -71,10 +71,12 @@ export function Footer() {
                 {footerConfig.contactEmail}
               </a>
               <a
-                href={footerConfig.contactPhoneHref}
+                href={footerConfig.contactTelegramHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="transition hover:text-slate-950"
               >
-                {footerConfig.contactPhoneLabel}
+                {footerConfig.contactTelegramLabel}
               </a>
             </div>
           </div>
