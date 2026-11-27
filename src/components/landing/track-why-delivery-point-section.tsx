@@ -22,7 +22,7 @@ export function TrackWhyDeliveryPointSection() {
       <div className="absolute inset-0">
         <div className="section-container absolute bottom-0 left-1/2 top-0 w-full -translate-x-1/2 overflow-hidden">
           <Image
-            src="/img.png"
+            src="/img.webp"
             alt=""
             fill
             className="object-contain object-right"

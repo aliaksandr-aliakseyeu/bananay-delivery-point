@@ -1,7 +1,6 @@
 export const API_BASE_URL =
-  process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  'https://bananay-calc.ambitiousforest-deb74a1a.westus.azurecontainerapps.io';
+  'http://localhost:8000';
 
 export const DEFAULT_REGION_ID = Number(process.env.NEXT_PUBLIC_DEFAULT_REGION_ID || 1);
 
