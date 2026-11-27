@@ -45,5 +45,9 @@ jobs:
           imageToBuild: bananayregistry-dxbhdveghzcwh5fw.azurecr.io/bananay-delivery-point:${{ github.sha }}
           buildArguments: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-
+            NEXT_PUBLIC_APP_COURIER_URL=${{ vars.NEXT_PUBLIC_APP_COURIER_URL }}
+            NEXT_PUBLIC_APP_HUB_URL=${{ vars.NEXT_PUBLIC_APP_HUB_URL }}
+            NEXT_PUBLIC_APP_PRODUCER_URL=${{ vars.NEXT_PUBLIC_APP_PRODUCER_URL }}
+            NEXT_PUBLIC_APP_TRACKING_URL=${{ vars.NEXT_PUBLIC_APP_TRACKING_URL }}
+            NEXT_PUBLIC_APP_TRUCK_URL=${{ vars.NEXT_PUBLIC_APP_TRUCK_URL }}
 
