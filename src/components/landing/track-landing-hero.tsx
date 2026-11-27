@@ -11,7 +11,7 @@ export function TrackLandingHero() {
   return (
     <section className="relative flex min-h-[75vh] items-center overflow-hidden">
       <Image
-        src="/hero.png"
+        src="/hero.webp"
         alt=""
         fill
         priority
